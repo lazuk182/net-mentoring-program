@@ -13,6 +13,7 @@ namespace CartingService.DAL.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [BsonId]
         public int Id { get; set; }
         [BsonRef("Items")]
         public ICollection<Item> Items { get; set; } = new List<Item>();

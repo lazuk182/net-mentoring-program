@@ -60,9 +60,9 @@ namespace CartingService.BLL.Entities
         public bool AddItemToCart(Item newItem)
         {
             cartDataModel.Items.Add(newItem.MapToDALModel());
-            int firstCount = cartDataModel.Items.Count;
             _data.UpdateCart(cartDataModel);
-            return _data.Commit() > firstCount; 
+            _data.Commit();
+            return true; 
         }
 
         public IEnumerable<Item> GetListOfItems()

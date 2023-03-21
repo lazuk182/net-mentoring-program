@@ -13,6 +13,7 @@ namespace CartingService.DAL.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [BsonId]
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -24,7 +25,7 @@ namespace CartingService.DAL.Models
 
         [ForeignKey("Cart")]
         public int CartId { get; set; }
-        //[BsonRef("Carts")]
+        
         public Cart Cart { get; set; }
     }
 }

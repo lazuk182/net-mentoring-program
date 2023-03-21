@@ -3,6 +3,7 @@ using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,42 +11,49 @@ namespace CartingService.DAL
 {
     public class CartLiteDb : ICartData
     {
-        private readonly LiteDB.LiteDatabase db;
-        public CartLiteDb(LiteDB.LiteDatabase db)
+        private LiteDatabase db;
+        private ILiteCollection<Cart> cartsCollection;
+        private ILiteCollection<Item> itemsCollection;
+
+        public CartLiteDb(LiteDatabase db)
         {
             this.db = db;
+            cartsCollection = db.GetCollection<Cart>("Carts");
+            itemsCollection = db.GetCollection<Item>("Items");
+
             if (!db.CollectionExists("Items"))
             {
-                var itemsCollection = db.GetCollection<Cart>("items");
                 itemsCollection.EnsureIndex(x => x.Id, true);
-            }
+            }            
 
             if (!db.CollectionExists("Carts"))
-            {
-                var cartsCollection = db.GetCollection<Cart>("Carts");
                 cartsCollection.EnsureIndex(x => x.Id, true);
-            }
-            
-            var mapper = BsonMapper.Global;
-            mapper.Entity<Cart>()
-                .DbRef(x => x.Items, "Items");
-            mapper.Entity<Item>()
-                .DbRef(x => x.Cart, "Carts");
         }
 
         public Cart AddCart(Cart newCart)
         {
-            var col = db.GetCollection<Cart>("Carts");
-            var result = col.Insert(newCart);
-            //var items = db.GetCollection<Item>("Items");
-            //items.InsertBulk(newCart.Items);
-            newCart.Id = result.AsInt32;
+            cartsCollection.Insert(newCart);
+            if (newCart.Items.Count > 0)
+            {
+                itemsCollection.InsertBulk(newCart.Items);
+            }
             return newCart;
+        }
+
+        public int UpdateCart(Cart updatedCart)
+        {
+            bool WasUpdated = true;
+            foreach (var item in updatedCart.Items)
+            {
+                WasUpdated &= itemsCollection.Upsert(item);
+            }
+            bool wasUpdated = cartsCollection.Update(updatedCart);
+            return wasUpdated ? 1 : 0;
         }
 
         public int Commit()
         {
-            return 1;
+            return db.Commit() ? 1 : 0;
         }
 
         public int DeleteCart(int cartId)
@@ -57,29 +65,17 @@ namespace CartingService.DAL
 
         public IEnumerable<Cart> GetAll()
         {
-            var col = db.GetCollection<Cart>("Carts");
-            return col.FindAll();
+            return cartsCollection.Include(cart => cart.Items).FindAll();
         }
 
         public Cart GetCartById(int cartId)
         {
-            var col = db.GetCollection<Cart>("Carts");
-            return col.Include(x => x.Items).Find(x => x.Id == cartId).FirstOrDefault();
+            return cartsCollection.Include(cart => cart.Items).FindById(cartId);
         }
 
         public int GetMaxId()
         {
             throw new NotImplementedException();
-        }
-
-        public int UpdateCart(Cart updatedCart)
-        {
-            var carts = db.GetCollection<Cart>("Carts");
-            carts.Update(updatedCart);
-            var items = db.GetCollection<Item>("Items");
-            foreach(var item in updatedCart.Items)
-                items.Update(item);
-            return 1;
         }
     }
 }
