@@ -1,4 +1,5 @@
 ﻿using CatalogService.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,11 @@ namespace CatalogService.DAL
             return db.SaveChanges();
         }
 
+        public async Task<int> CommitAsync()
+        {
+            return await db.SaveChangesAsync();
+        }
+
         public bool DeleteCategory(int id)
         {
             var CategoryDeleted = GetCategoryById(id);
@@ -52,9 +58,19 @@ namespace CatalogService.DAL
             return db.Categories;
         }
 
+        public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            return await db.Categories.ToListAsync();
+        }
+
         public IEnumerable<Product> GetAllProducts()
         {
             return db.Products;
+        }
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await db.Products.ToListAsync();
         }
 
         public Category GetCategoryById(int id)
@@ -62,9 +78,19 @@ namespace CatalogService.DAL
             return db.Categories.Find(id);
         }
 
+        public async Task<Category> GetCategoryByIdAsync(int id)
+        {
+            return await db.Categories.FindAsync(id);
+        }
+
         public Product GetProductById(int id)
         {
             return db.Products.Find(id);
+        }
+
+        public async Task<Product> GetProductByIdAsync(int id)
+        {
+            return await db.Products.FindAsync(id);
         }
 
         public Category UpdateCategory(Category category)

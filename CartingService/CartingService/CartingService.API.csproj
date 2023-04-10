@@ -8,6 +8,8 @@
 
   <ItemGroup>
 	<PackageReference Include="MaikeBing.EntityFrameworkCore.LiteDB" Version="0.0.14" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
@@ -15,6 +17,10 @@
   <ItemGroup>
     <ProjectReference Include="..\CartingService.BL\CartingService.BLL.csproj" />
     <ProjectReference Include="..\CartingService.DAL\CartingService.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ControllersV2\" />
   </ItemGroup>
 
 </Project>

@@ -15,6 +15,7 @@ namespace CartingService.DAL
         {
             _context = context;
         }
+
         public Cart AddCart(Cart newCart)
         {
             var entity = _context.Carts.Attach(newCart);

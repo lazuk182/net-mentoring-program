@@ -10,7 +10,7 @@ namespace CartingService.Test
 {
     public class CartingServiceMemoryDb
     {
-        private ICartService cartService;
+        private ICartService? cartService;
 
         [SetUp]
         public void Setup()
@@ -20,59 +20,59 @@ namespace CartingService.Test
                 .Options;
             CartingContext dbContext = new CartingContext(options);
             DAL.ICartData cartData = new DAL.CartData(dbContext);
-            cartService = new BLL.Entities.Cart(cartData);
+            cartService = new CartService(cartData);
         }
 
         [Test, Order(1)]
         public void CreateCart()
         {
-            cartService.Initialize();
-            Assert.AreEqual(1, cartService.GetCartId());
+            var newCart = cartService.CreateCart();
+            Assert.AreEqual(1, newCart.Id);
         }
 
         [Test, Order(2)]
         public void AddItemToCart()
         {
-            cartService.Initialize();
-            var newItem = new BLL.Entities.Item()
+            var newCart = cartService.CreateCart();
+            var newItem = new DAL.Models.Item()
             {
                 Image = "http://image.url",
                 Name = "Test Item",
                 Price = 99,
                 Quantity = 1
             };
-            cartService.AddItemToCart(newItem);
-            Assert.AreEqual(1, cartService.GetListOfItems().Count());
+            cartService.AddItemToCart(newItem, newCart.Id);
+            Assert.AreEqual(1, newCart.Items.Count());
         }
 
         [Test, Order(3)]
         public void AddMultipleItemsToCart()
         {
-            cartService.Initialize();
-            var listOfItems = new List<BLL.Entities.Item>
+            var newCart = cartService.CreateCart();
+            var listOfItems = new List<DAL.Models.Item>
             {
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 1",
                     Price = 99,
                     Quantity = 1
                 },
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 2",
                     Price = 30,
                     Quantity = 1
                 },
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 3",
                     Price = 19,
                     Quantity = 1
                 },
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 4",
@@ -82,25 +82,25 @@ namespace CartingService.Test
             };
             foreach(var newItem in listOfItems)
             {
-                cartService.AddItemToCart(newItem);
+                cartService.AddItemToCart(newItem, newCart.Id);
             }
-            Assert.AreEqual(listOfItems.Count(), cartService.GetListOfItems().Count());
+            Assert.AreEqual(listOfItems.Count(), newCart.Items.Count());
         }
 
         [Test, Order(4)]
         public void RemoveItemFromCart()
         {
-            cartService.Initialize();
-            var listOfItems = new List<BLL.Entities.Item>
+            var newCart = cartService.CreateCart();
+            var listOfItems = new List<DAL.Models.Item>
             {
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 1",
                     Price = 99,
                     Quantity = 1
                 },
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 2",
@@ -110,28 +110,28 @@ namespace CartingService.Test
             };
             foreach (var newItem in listOfItems)
             {
-                cartService.AddItemToCart(newItem);
+                cartService.AddItemToCart(newItem, newCart.Id);
             }
-            var ItemsInCart = cartService.GetListOfItems();
+            var ItemsInCart = newCart.Items;
             var ItemToBeDeletedId = ItemsInCart.First().Id;
-            cartService.RemoveItemFromCart(ItemToBeDeletedId);
-            Assert.AreEqual(1, cartService.GetListOfItems().Count());
+            cartService.RemoveItemFromCart(ItemToBeDeletedId, newCart.Id);
+            Assert.AreEqual(1, newCart.Items.Count());
         }
 
         [Test, Order(5)]
         public void ListElementsOfCart()
         {
-            cartService.Initialize();
-            var listOfItems = new List<BLL.Entities.Item>
+            var newCart = cartService.CreateCart();
+            var listOfItems = new List<DAL.Models.Item>
             {
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 1",
                     Price = 99,
                     Quantity = 1
                 },
-                new BLL.Entities.Item
+                new DAL.Models.Item
                 {
                     Image = "http://image.url",
                     Name = "Test Item 2",
@@ -141,9 +141,9 @@ namespace CartingService.Test
             };
             foreach (var newItem in listOfItems)
             {
-                cartService.AddItemToCart(newItem);
+                cartService.AddItemToCart(newItem, newCart.Id);
             }
-            Assert.AreEqual(listOfItems.Count(), cartService.GetListOfItems().Count());            
+            Assert.AreEqual(listOfItems.Count(), newCart.Items.Count());            
         }
     }
 }

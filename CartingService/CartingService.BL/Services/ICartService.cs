@@ -8,16 +8,14 @@ namespace CartingService.BLL.Services
 {
     public interface ICartService
     {
-        void Initialize(int id);
+        DAL.Models.Cart GetCartById(int Id);
 
-        void Initialize();
+        IEnumerable<DAL.Models.Item> GetListOfItemsFrom(int cartId);
 
-        int GetCartId();
+        bool AddItemToCart(DAL.Models.Item newItem, int cartId);
 
-        IEnumerable<Entities.Item> GetListOfItems();
+        bool RemoveItemFromCart(int itemId, int cartId);
 
-        bool AddItemToCart(Entities.Item newItem);
-
-        bool RemoveItemFromCart(int itemId);
+        DAL.Models.Cart CreateCart();
     }
 }

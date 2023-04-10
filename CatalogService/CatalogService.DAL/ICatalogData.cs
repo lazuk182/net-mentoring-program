@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CatalogService.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace CatalogService.DAL
     public interface ICatalogData
     {
         int Commit();
+        Task<int> CommitAsync();
 
         #region Products
         Models.Product GetProductById(int id);
@@ -16,14 +18,20 @@ namespace CatalogService.DAL
         Models.Product AddProduct(Models.Product product);
         bool DeleteProduct(int id);
         Models.Product UpdateProduct(Models.Product product);
+
+        Task<Models.Product> GetProductByIdAsync(int id);
+        Task<List<Models.Product>> GetAllProductsAsync();
         #endregion
 
         #region Categories
         Models.Category GetCategoryById(int id);
         IEnumerable<Models.Category> GetAllCategories();
-        Models.Category AddCategory(Models.Category Category);
         bool DeleteCategory(int id);
-        Models.Category UpdateCategory(Models.Category Category);
+        Category AddCategory(Category category);
+        Category UpdateCategory(Category category);
+
+        Task<Models.Category> GetCategoryByIdAsync(int id);  
+        Task<List<Models.Category>> GetAllCategoriesAsync();
         #endregion
     }
 }
