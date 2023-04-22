@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  rabbitmq3:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    environment:
+        - RABBITMQ_DEFAULT_USER=laz
+        - RABBITMQ_DEFAULT_PASS=adrian
+    ports:
+        # AMQP protocol port
+        - '5672:5672'
+        # HTTP management UI
+        - '15672:15672'
+    volumes:
+        - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\data\:/var/lib/rabbitmq/
+        - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\log\:/var/log/rabbitmq
