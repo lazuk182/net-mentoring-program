@@ -32,12 +32,20 @@ namespace CartingService.API.Controllers.V2
 
         // Add item to cart
         [HttpPost]
-        public ActionResult AddItemToCart(int cartKey, DAL.Models.Item item)
+        public ActionResult AddItemToCart(int cartKey, DTOs.AddItemToCartRequest item)
         {
             try
             {
                 var cart = _cartService.GetCartById(cartKey);
-                _cartService.AddItemToCart(item, cart.Id);
+                DAL.Models.Item itemToStore = new DAL.Models.Item
+                {
+                    Id = item.Id,
+                    Image = item.Image,
+                    Name = item.Name,
+                    Price = item.Price,
+                    Quantity = item.Quantity
+                };
+                _cartService.AddItemToCart(itemToStore, cart == null ? 0 : cart.Id);
                 cart = _cartService.GetCartById(cartKey);
                 return Ok(cart);
             }

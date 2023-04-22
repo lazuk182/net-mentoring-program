@@ -62,5 +62,12 @@ namespace CartingService.DAL
             entity.State = EntityState.Modified;
             return 1;
         }
+
+        public Item UpdateItem(Item item)
+        {
+            var entity = _context.Items.Attach(item);
+            entity.State = EntityState.Modified;
+            return item;
+        }
     }
 }

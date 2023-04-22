@@ -17,18 +17,19 @@ namespace CartingService.BLL.Services
 
         public bool AddItemToCart(Item newItem, int cartId)
         {
-            var cart = GetCartById(cartId);
-            if (cart == null)
+            Cart cart;
+            if (cartId < 1)
             {
-                throw new ArgumentException("cartId was not found");
+                cart = CreateCart();
             }
             else
             {
-                cart.Items.Add(newItem);
-                data.UpdateCart(cart);
-                data.Commit();
-                return true;
+                cart = GetCartById(cartId);
             }
+            cart.Items.Add(newItem);
+            data.UpdateCart(cart);
+            data.Commit();
+            return true;
         }
 
         public Cart CreateCart()
@@ -77,6 +78,12 @@ namespace CartingService.BLL.Services
                 data.Commit();
                 return true;
             }
+        }
+
+        public Item UpdateItemInformation(Item item)
+        {
+            return data.UpdateItem(item);
+            
         }
     }
 }

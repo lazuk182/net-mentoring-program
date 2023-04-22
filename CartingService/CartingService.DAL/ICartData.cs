@@ -13,6 +13,8 @@ namespace CartingService.DAL
 
         int UpdateCart(Models.Cart updatedCart);
 
+        Models.Item UpdateItem(Models.Item item);
+
         int DeleteCart(int cartId);
 
         Models.Cart GetCartById(int cartId);

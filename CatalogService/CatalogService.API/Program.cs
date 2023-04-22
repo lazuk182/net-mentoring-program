@@ -10,8 +10,10 @@ builder.Services.AddDbContextPool<CatalogContext>(options =>
 {
     options.UseInMemoryDatabase(databaseName: "CatalogDb");
 });
+builder.Services.AddScoped<ICatalogData, CatalogDataEF>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

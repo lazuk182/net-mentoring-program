@@ -1,4 +1,5 @@
-﻿using CatalogService.BLL;
+﻿using CatalogService.API.DTO;
+using CatalogService.BLL;
 using CatalogService.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,12 @@ namespace CatalogService.API.Controllers
     {
         private readonly IProductService _itemRepository;
         private readonly ICategoryService _categoryRepository;
-
-        public CatalogController(IProductService itemRepository, ICategoryService categoryRepository)
+        private readonly IRabbitMQProducer _rabbitMQ;
+        public CatalogController(IProductService itemRepository, ICategoryService categoryRepository, IRabbitMQProducer rabbitMQ)
         {
             _itemRepository = itemRepository;
             _categoryRepository = categoryRepository;
+            _rabbitMQ = rabbitMQ;
         }
 
         [HttpGet("categories")]
@@ -37,26 +39,39 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("categories")]
-        public async Task<ActionResult<Category>> AddCategory([FromBody] Category category)
+        public async Task<ActionResult<Category>> AddCategory(DTO.AddCategoryRequest category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var addedCategory = await _categoryRepository.AddAsync(category);
+            Category categoryToStore = new Category
+            {
+                Image = category.Image,
+                Name = category.Name
+            };
+            var addedCategory = await _categoryRepository.AddAsync(categoryToStore);
             return CreatedAtAction(nameof(GetCategories), new { id = addedCategory.Id }, addedCategory);
         }
 
         [HttpPost("items")]
-        public async Task<ActionResult<Product>> AddItem([FromBody] Product item)
+        public async Task<ActionResult<Product>> AddItem([FromBody] AddProductRequest item)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var addedItem = await _itemRepository.AddAsync(item);
+            Product productToStore = new Product
+            {
+                Amount = item.Amount,
+                Name = item.Name,
+                CategoryId = item.CategoryId,
+                Image = item.Image,
+                Description = item.Description,
+                Price = item.Price
+            };
+            var addedItem = await _itemRepository.AddAsync(productToStore);
             return CreatedAtAction(nameof(GetItems), new { id = addedItem.Id }, addedItem);
         }
 
@@ -78,9 +93,13 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPut("items/{id}")]
-        public async Task<ActionResult<Product>> UpdateItem(int id, [FromBody] Product item)
+        public async Task<ActionResult<Product>> UpdateItem(int id, [FromBody] AddProductRequest item)
         {
-            if (id != item.Id)
+            Product productToUpdate = await _itemRepository.GetAsync(id);
+            if (productToUpdate == null)
+                return NotFound();
+
+            if (id != productToUpdate.Id)
             {
                 return BadRequest("Id mismatch");
             }
@@ -89,8 +108,31 @@ namespace CatalogService.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var updatedItem = await _itemRepository.UpdateAsync(item);
+            productToUpdate.Amount = item.Amount;
+            productToUpdate.Description = item.Description;
+            productToUpdate.Price = item.Price;
+            productToUpdate.Name = item.Name;
+            productToUpdate.CategoryId = item.CategoryId;
+            productToUpdate.Image = item.Image;
+            var updatedItem = await _itemRepository.UpdateAsync(productToUpdate);
+            var ProductCart = new DTO.ProductCart
+            {
+                Id = productToUpdate.Id,
+                Image = productToUpdate.Image,
+                Name = productToUpdate.Name,
+                Price = productToUpdate.Price
+            };
+            _rabbitMQ.SendProductMessage(ProductCart);
+            /*
+             POST =>
+                {
+                  "id": 1,
+                  "name": "prueba modificada",
+                  "image": "datos de imagen",
+                  "price": 10
+                }
+                https://localhost:7068/api/v2/Item
+             * */
             return Ok(updatedItem);
         }
 

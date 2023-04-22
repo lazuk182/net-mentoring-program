@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CartingService.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,7 @@ namespace CartingService.BLL.Services
         bool RemoveItemFromCart(int itemId, int cartId);
 
         DAL.Models.Cart CreateCart();
+
+        DAL.Models.Item UpdateItemInformation(Item item);
     }
 }

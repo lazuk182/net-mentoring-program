@@ -20,10 +20,11 @@ builder.Services.AddControllers();
 //builder.Services.AddScoped<ICartData, CartData>();
 
 var Database = new LiteDB.LiteDatabase(builder.Configuration.GetConnectionString("DefaultConnection"));
-builder.Services.AddScoped<ICartData, CartLiteDb>(provider => new CartLiteDb(Database));
 
+builder.Services.AddScoped<ICartData, CartLiteDb>(provider => new CartLiteDb(Database));
 builder.Services.AddScoped<ICartService, CartService>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddHostedService(provider => new MessageConsumer(Database));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning(opt =>

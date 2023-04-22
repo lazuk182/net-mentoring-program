@@ -12,7 +12,7 @@ namespace CartingService.DAL.Models
     public class Item
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [BsonId]
         public int Id { get; set; }
 

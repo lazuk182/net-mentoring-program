@@ -77,5 +77,11 @@ namespace CartingService.DAL
         {
             throw new NotImplementedException();
         }
+
+        public Item UpdateItem(Item item)
+        {
+            itemsCollection.Update(item);
+            return item;
+        }
     }
 }

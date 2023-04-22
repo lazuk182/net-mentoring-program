@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.API", "CatalogService.API\CatalogService.API.csproj", "{4454970E-7981-4A6D-972D-4B20D03B818F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogService.API", "CatalogService.API\CatalogService.API.csproj", "{4454970E-7981-4A6D-972D-4B20D03B818F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.DAL", "CatalogService.DAL\CatalogService.DAL.csproj", "{D956BB74-9494-47F7-8A82-96D1A3EB229E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogService.DAL", "CatalogService.DAL\CatalogService.DAL.csproj", "{D956BB74-9494-47F7-8A82-96D1A3EB229E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.BLL", "CatalogService.BLL\CatalogService.BLL.csproj", "{59B8DE34-9AC2-4729-8A60-AA95D938D189}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogService.BLL", "CatalogService.BLL\CatalogService.BLL.csproj", "{59B8DE34-9AC2-4729-8A60-AA95D938D189}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Tests", "CatalogService.Tests\CatalogService.Tests.csproj", "{F514D2EB-2FC2-4561-8C4E-4459C7C6C979}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogService.Tests", "CatalogService.Tests\CatalogService.Tests.csproj", "{F514D2EB-2FC2-4561-8C4E-4459C7C6C979}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

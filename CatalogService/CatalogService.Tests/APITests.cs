@@ -17,13 +17,14 @@ namespace CatalogService.Tests
         private CatalogController _controller;
         private Mock<IProductService> _itemRepositoryMock;
         private Mock<ICategoryService> _categoryRepositoryMock;
-
+        private IRabbitMQProducer _rabbitMQ;
         [SetUp]
         public void SetUp()
         {
             _itemRepositoryMock = new Mock<IProductService>();
             _categoryRepositoryMock = new Mock<ICategoryService>();
-            _controller = new CatalogController(_itemRepositoryMock.Object, _categoryRepositoryMock.Object);
+            _rabbitMQ = new RabbitMQProducer();
+            _controller = new CatalogController(_itemRepositoryMock.Object, _categoryRepositoryMock.Object, _rabbitMQ);
         }
 
         [Test]
@@ -98,7 +99,12 @@ namespace CatalogService.Tests
             _categoryRepositoryMock.Setup(repo => repo.AddAsync(category)).ReturnsAsync(category);
 
             // Act
-            var result = await _controller.AddCategory(category);
+            var cat = new API.DTO.AddCategoryRequest
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            var result = await _controller.AddCategory(cat);
 
             // Assert
             Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
@@ -119,7 +125,12 @@ namespace CatalogService.Tests
             object value = _itemRepositoryMock.Setup(repo => repo.AddAsync(item)).ReturnsAsync(item);
 
             // Act
-            var result = await _controller.AddItem(item);
+            var product = new API.DTO.AddProductRequest
+            {
+                CategoryId = item.CategoryId,
+                Name = item.Name
+            };
+            var result = await _controller.AddItem(product);
 
             // Assert
             Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
