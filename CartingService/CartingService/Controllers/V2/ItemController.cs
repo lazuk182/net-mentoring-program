@@ -1,6 +1,8 @@
 ﻿using CartingService.BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Globalization;
 
 namespace CartingService.API.Controllers.V2
@@ -17,6 +19,7 @@ namespace CartingService.API.Controllers.V2
         }
 
         [HttpPost]
+        [Authorize(Roles = "manager, buyer")]
         public IActionResult UpdateItem(DTOs.UpdateItemInformation item)
         {
             try

@@ -1,9 +1,11 @@
 ﻿using CatalogService.API.DTO;
 using CatalogService.BLL;
 using CatalogService.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace CatalogService.API.Controllers
 {
@@ -22,6 +24,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpGet("categories")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
             var categories = await _categoryRepository.ListAsync();
@@ -29,6 +32,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpGet("items")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<IEnumerable<Product>>> GetItems([FromQuery] int? categoryId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var items = await _itemRepository.ListAsync(categoryId, pageNumber, pageSize);
@@ -39,6 +43,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("categories")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Category>> AddCategory(DTO.AddCategoryRequest category)
         {
             if (!ModelState.IsValid)
@@ -56,6 +61,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("items")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Product>> AddItem([FromBody] AddProductRequest item)
         {
             if (!ModelState.IsValid)
@@ -76,6 +82,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPut("categories/{id}")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Category>> UpdateCategory(int id, [FromBody] Category category)
         {
             if (id != category.Id)
@@ -93,6 +100,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPut("items/{id}")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Product>> UpdateItem(int id, [FromBody] AddProductRequest item)
         {
             Product productToUpdate = await _itemRepository.GetAsync(id);
@@ -137,6 +145,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpDelete("items/{id}")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult> DeleteItem(int id)
         {
             await _itemRepository.DeleteAsync(id);
@@ -144,6 +153,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpDelete("categories/{id}")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult> DeleteCategory(int id)
         {
             await _categoryRepository.DeleteAsync(id);

@@ -1,6 +1,8 @@
 ﻿using CartingService.BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace CartingService.API.Controllers.V2
 {
@@ -17,6 +19,7 @@ namespace CartingService.API.Controllers.V2
 
         // GET: api/<CartController>
         [HttpGet]
+        [Authorize(Roles = "manager, buyer")]
         public IActionResult GetCart(int cartKey)
         {
             var cart = _cartService.GetCartById(cartKey);
@@ -32,6 +35,7 @@ namespace CartingService.API.Controllers.V2
 
         // Add item to cart
         [HttpPost]
+        [Authorize(Roles = "manager, buyer")]
         public ActionResult AddItemToCart(int cartKey, DTOs.AddItemToCartRequest item)
         {
             try
@@ -64,6 +68,7 @@ namespace CartingService.API.Controllers.V2
 
         // Delete item from cart
         [HttpDelete]
+        [Authorize(Roles = "manager, buyer")]
         public ActionResult DeleteItemFromCart(int cartKey, int itemId)
         {
             try

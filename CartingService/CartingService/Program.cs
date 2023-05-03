@@ -1,5 +1,6 @@
 using CartingService.BLL.Services;
 using CartingService.DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CartingService.DAL.Database;
 using MaikeBing.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using CartingService.API;
+using Microsoft.OpenApi.Models;
+using CartingService.API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +47,38 @@ builder.Services.AddVersionedApiExplorer(setup =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+            {
+                o.Authority = "http://localhost:8080/auth/realms/mentoring-app";
+                o.Audience = "account";
+                o.RequireHttpsMetadata = false;
+            });
+builder.Services.AddSwaggerGen(setup =>
+{
+    setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer"
+    });
+    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+});
 
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
@@ -67,6 +101,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<LogAccessTokenMiddleware>();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
