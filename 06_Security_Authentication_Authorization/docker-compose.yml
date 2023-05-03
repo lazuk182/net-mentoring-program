@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  rabbitmq3:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    environment:
+        - RABBITMQ_DEFAULT_USER=laz
+        - RABBITMQ_DEFAULT_PASS=adrian
+    ports:
+        # AMQP protocol port
+        - '5672:5672'
+        # HTTP management UI
+        - '15672:15672'
+    volumes:
+        - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\data\:/var/lib/rabbitmq/
+        - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\log\:/var/log/rabbitmq
+  keycloak:
+    image: quay.io/keycloak/keycloak:12.0.2
+    container_name: keycloak
+    ports:
+        - 8080:8080
+        - 8443:8433
+    restart: unless-stopped
+    environment:
+        # Credentials for admin account
+        # -----------------------------
+        KEYCLOAK_USER: "admin"
+        KEYCLOAK_PASSWORD: "admin"
+        
+        # Credentials for storing into an external database
+        # -------------------------------------------------
+        # DB_VENDOR: "mysql"
+        # DB_ADDR:
+        # DB_PORT:
+        # DB_DATABASE:
+        # DB_USER:
+        # DB_PASSWORD:
