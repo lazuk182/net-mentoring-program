@@ -1,0 +1,87 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7032"
+  },
+  "Routes": [
+    //Catalog Service
+    {
+      "UpstreamPathTemplate": "/api/Catalog/{everything}",
+      "SwaggerKey": "Catalog",
+      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "DownstreamPathTemplate": "/api/Catalog/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/Catalog/{everything}",
+      "SwaggerKey": "Catalog",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/Catalog/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ],
+      "FileCacheOptions": {
+        "TtlSeconds": 60 //1 minuto de cache
+      }
+    },
+    //Cart Service
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "SwaggerKey": "Carting",
+      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7068
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "SwaggerKey": "Carting",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7068
+        }
+      ],
+      "FileCacheOptions": {
+        "TtlSeconds": 60 //1 minuto de cache
+      }
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "Catalog",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "Catalog.API",
+          "Version": "1.0",
+          "Url": "https://localhost:7117/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Carting",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "Carting.API",
+          "Version": "2.0",
+          "Url": "https://localhost:7068/swagger/v2/swagger.json"
+        }
+      ]
+    }
+  ]
+}

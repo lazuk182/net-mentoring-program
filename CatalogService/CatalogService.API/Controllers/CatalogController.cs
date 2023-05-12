@@ -42,6 +42,21 @@ namespace CatalogService.API.Controllers
                 return NotFound();
         }
 
+        [HttpGet("item")]
+        [Authorize(Roles = "manager")]
+        public ActionResult<Product> GetItem(int itemId)
+        {
+            Thread.Sleep(5000); //Test caché
+            return Ok(new Product { 
+                Id = itemId, 
+                CategoryId = 1, 
+                Amount = 20, 
+                Description = "Cellphone",
+                Name = "iPhone 13",
+                Price = 15000
+            });
+        }
+
         [HttpPost("categories")]
         [Authorize(Roles = "manager")]
         public async Task<ActionResult<Category>> AddCategory(DTO.AddCategoryRequest category)
