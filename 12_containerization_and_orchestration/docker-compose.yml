@@ -1,0 +1,68 @@
+version: '3'
+services:
+    rabbitmq3:
+        image: rabbitmq:3-management
+        container_name: 'rabbitmq'
+        environment:
+            - RABBITMQ_DEFAULT_USER=laz
+            - RABBITMQ_DEFAULT_PASS=adrian
+        ports:
+            # AMQP protocol port
+            - '5672:5672'
+            # HTTP management UI
+            - '15672:15672'
+        volumes:
+            - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\data\:/var/lib/rabbitmq/
+            - C:\Users\Lazaro_Gonzalez\Documents\Lazaro\Docker\rabbitmq\log\:/var/log/rabbitmq
+    keycloak:
+        image: quay.io/keycloak/keycloak:12.0.2
+        container_name: keycloak
+        ports:
+            - 8080:8080
+            - 8443:8433
+        restart: unless-stopped
+        environment:
+            KEYCLOAK_USER: "admin"
+            KEYCLOAK_PASSWORD: "admin"    
+    cartingservice:
+        image: cartingserviceapi:dev
+        container_name: 'cartingservice'
+        build:
+            context: C:\Users\Lazaro_Gonzalez\Code\net-mentoring-program\CartingService
+            dockerfile: C:\Users\Lazaro_Gonzalez\Code\net-mentoring-program\CartingService\CartingService\Dockerfile
+        ports:
+            - 5000:443
+            - 5001:80
+        environment:
+            - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - DOTNET_USE_POLLING_FILE_WATCHER=1
+            - NUGET_PACKAGES=/root/.nuget/fallbackpackages2
+            - NUGET_FALLBACK_PACKAGES=/root/.nuget/fallbackpackages;/root/.nuget/fallbackpackages2
+        extra_hosts:
+            - "superhost:172.23.96.1"
+        volumes:
+            - C:\Users\Lazaro_Gonzalez\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+            - C:\Users\Lazaro_Gonzalez\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    catalogservice:
+        image: catalogserviceapi:dev
+        container_name: 'catalogservice'
+        build:
+            context: C:\Users\Lazaro_Gonzalez\Code\net-mentoring-program\CatalogService
+            dockerfile: C:\Users\Lazaro_Gonzalez\Code\net-mentoring-program\CatalogService\CatalogService.API\Dockerfile
+        ports:
+            - 5003:80
+        environment:
+            - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:80
+            - DOTNET_USE_POLLING_FILE_WATCHER=1
+            - NUGET_PACKAGES=/root/.nuget/fallbackpackages2
+            - NUGET_FALLBACK_PACKAGES=/root/.nuget/fallbackpackages;/root/.nuget/fallbackpackages2
+        extra_hosts:
+            - "superhost:172.23.96.1"
+        volumes:
+            - C:\Users\Lazaro_Gonzalez\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+            - C:\Users\Lazaro_Gonzalez\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+        

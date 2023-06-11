@@ -15,7 +15,7 @@ namespace CatalogService.BLL
             //Here we specify the Rabbit MQ Server. we use rabbitmq docker image and use it
             var factory = new ConnectionFactory
             {
-                HostName = "localhost",
+                HostName = "superhost",
                 UserName = "laz",
                 Password = "adrian",
             };

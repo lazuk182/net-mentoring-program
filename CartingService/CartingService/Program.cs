@@ -12,7 +12,6 @@ using Microsoft.OpenApi.Models;
 using CartingService.API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -23,6 +22,7 @@ builder.Services.AddControllers();
 //builder.Services.AddScoped<ICartData, CartData>();
 
 var Database = new LiteDB.LiteDatabase(builder.Configuration.GetConnectionString("DefaultConnection"));
+//var KeycloakService = builder.Configuration["KeycloakService"] ?? "localhost";
 
 builder.Services.AddScoped<ICartData, CartLiteDb>(provider => new CartLiteDb(Database));
 builder.Services.AddScoped<ICartService, CartService>();
@@ -46,11 +46,11 @@ builder.Services.AddVersionedApiExplorer(setup =>
     setup.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
             {
-                o.Authority = "http://localhost:8080/auth/realms/mentoring-app";
+                o.Authority = $"http://superhost:8080/auth/realms/mentoring-app";
                 o.Audience = "account";
                 o.RequireHttpsMetadata = false;
             });

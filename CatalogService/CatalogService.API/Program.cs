@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
             {
-                o.Authority = "http://localhost:8080/auth/realms/mentoring-app";
+                o.Authority = "http://superhost:8080/auth/realms/mentoring-app";
                 o.Audience = "account";
                 o.RequireHttpsMetadata = false;
             });

@@ -29,7 +29,7 @@ namespace CartingService.API
         {
             var factory = new ConnectionFactory 
             { 
-                HostName = "localhost",
+                HostName = "superhost",
                 UserName = "laz",
                 Password = "adrian"
             };
